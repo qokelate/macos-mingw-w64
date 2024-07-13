@@ -1,10 +1,16 @@
 #!/bin/zsh
 
-cmd="'$(dirname "$0")/jmp-i686-w64-mingw32-c++'"
+[ -z "$MINGW_LOGFILE" ] && \
+MINGW_LOGFILE="/tmp/$(basename "$0")-last-build.txt"
+
+cmd="'$(dirname "$0")/jmp-$(basename "$0")'"
 
 pass='0'
 for a in "$@"; do
-    [ "$pass" = '1' ] && continue
+    [ "$pass" = '1' ] && {
+        pass='0'
+        continue
+    }
     [ '-install_name' = "$a" ] && {
         pass='1'
         continue
@@ -14,6 +20,6 @@ done
 
 eval "$cmd"
 ecode="$?"
-[ '0' = "$ecode" ] && echo "[SUCCE] $cmd\n" >> /Volumes/RamDisk/1.txt
-[ '0' = "$ecode" ] || echo "[ERROR] error=$ecode, $cmd\n" >> /Volumes/RamDisk/1.txt
+[ '0' = "$ecode" ] && echo "[SUCCE] $cmd\n" >>"$MINGW_LOGFILE"
+[ '0' = "$ecode" ] || echo "[ERROR] error=$ecode, $cmd\n" >>"$MINGW_LOGFILE"
 exit "$ecode"

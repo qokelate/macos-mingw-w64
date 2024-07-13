@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+cmd="'$(dirname "$0")/jmp-i686-w64-mingw32-c++'"
+
+pass='0'
+for a in "$@"; do
+    [ "$pass" = '1' ] && continue
+    [ '-install_name' = "$a" ] && {
+        pass='1'
+        continue
+    }
+    cmd="$cmd '$a'"
+done
+
+eval "$cmd"
+ecode="$?"
+[ '0' = "$ecode" ] && echo "[SUCCE] $cmd\n" >> /Volumes/RamDisk/1.txt
+[ '0' = "$ecode" ] || echo "[ERROR] error=$ecode, $cmd\n" >> /Volumes/RamDisk/1.txt
+exit "$ecode"
